@@ -27,9 +27,19 @@ public class User {
     @Embedded
     private UserPreferences preferences;
 
-    @OneToMany()
+    @OneToMany(
+            targetEntity = Authority.class,
+            mappedBy = "username",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true)
     private Set<Authority> authorities;
 
 //    @OneToMany
 //    private List<ShoppingList> shoppingLists;
+
+
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
 }
