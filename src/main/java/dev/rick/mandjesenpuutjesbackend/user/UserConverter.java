@@ -24,6 +24,15 @@ public class UserConverter {
         return newUser;
     }
 
+    public UserPreferencesDTO convertToUserPreferencesDTO(UserPreferences userPreferences) {
+        return new UserPreferencesDTO(
+                userPreferences.isShowMeat(),
+                userPreferences.isShowFish(),
+                userPreferences.isShowVegetarian(),
+                userPreferences.isShowVegan()
+        );
+    }
+
     public UserOutputDTO convertUserToDTO(User user) {
         return new UserOutputDTO(
                 user.getUsername(),

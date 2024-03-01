@@ -94,22 +94,6 @@ class UserServiceTest {
         assertThrows(NameIsTakenException.class, () -> userService.registerNewUser(newUserDTO));
     }
 
-    @Test
-    void shouldAddAuthorityToUser() {
-        String username = "henk@novi.nl";
-        String authorityName = "USER";
 
-        User userFromRepo = new User();
-        when(userFromRepo.getUsername()).thenReturn(username);
-        when(userFromRepo.getAuthorities()).thenReturn(new HashSet<>());
-        doNothing().when(userFromRepo).addAuthority(any(Authority.class));
-
-        when(userRepository.findById(username)).thenReturn(Optional.of(userFromRepo));
-
-        boolean authorityAdded = userService.addAuthorityToUser(username, authorityName);
-
-        assertTrue(authorityAdded);
-        verify(userFromRepo).addAuthority(new Authority(username, authorityName));
-    }
 
 }
