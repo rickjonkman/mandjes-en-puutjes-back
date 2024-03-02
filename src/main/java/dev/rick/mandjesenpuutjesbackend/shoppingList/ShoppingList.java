@@ -21,6 +21,9 @@ public class ShoppingList {
     @GeneratedValue
     private int id;
 
+    @Column(name = "current")
+    private boolean currentList;
+
     @Column(name = "created")
     private LocalDate creationDate;
 
@@ -29,5 +32,9 @@ public class ShoppingList {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User user;
+
+    public void addGroceryToList(Grocery grocery) {
+        this.groceries.add(grocery);
+    }
 
 }
