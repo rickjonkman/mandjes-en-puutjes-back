@@ -11,6 +11,7 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, Inte
     @Query("SELECT s FROM ShoppingList s WHERE s.user.username = :username ORDER BY s.id DESC LIMIT 5")
     Optional<List<ShoppingList>> findShoppingListsByUser_Username(String username);
 
-    @Query("SELECT s FROM ShoppingList s WHERE s.currentList = :isCurrentList")
+
+    @Query("SELECT s FROM ShoppingList s WHERE s.currentList = true")
     Optional<ShoppingList> findShoppingListsByCurrentListAndUser_Username(boolean isCurrentList, String username);
 }

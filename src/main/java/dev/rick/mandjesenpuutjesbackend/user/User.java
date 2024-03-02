@@ -1,5 +1,6 @@
 package dev.rick.mandjesenpuutjesbackend.user;
 
+import dev.rick.mandjesenpuutjesbackend.recipe.models.Recipe;
 import dev.rick.mandjesenpuutjesbackend.shoppingList.ShoppingList;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +36,13 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<ShoppingList> shoppingLists;
+
+    @ManyToMany
+    private List<Recipe> savedRecipes;
+
+    @OneToMany(mappedBy = "createdByUser")
+    private List<Recipe> createdRecipes;
+
 
 
     public void addAuthority(Authority authority) {

@@ -46,7 +46,8 @@ public class ShoppingListService {
 
         Optional<ShoppingList> optionalShoppingList = shoppingListRepo.findShoppingListsByCurrentListAndUser_Username(true, username);
         if (optionalShoppingList.isEmpty()) {
-            throw new NothingFoundForUserException(username);
+            ShoppingList newList = createNewShoppingList(inputDTO);
+            return converter.convertToDTO(newList);
         } else {
             setCurrentListToFalse(optionalShoppingList.get());
             ShoppingList createdList = createNewShoppingList(inputDTO);
@@ -55,14 +56,26 @@ public class ShoppingListService {
         }
     }
 
-    public List<GroceryDTO> addGroceryToList(GroceryDTO groceryDTO, String username, int id) {
+    public List<GroceryDTO> addGroceryToList(GroceryDTO groceryDTO, String username) {
 
-        Optional<ShoppingList> optionalShoppingList = shoppingListRepo.findById(id);
-        if (optionalShoppingList.isEmpty()) {
-            throw new RecordNotFoundException(id);
+        ShoppingList foundList = findCurrentShoppingListFromUser(username);
+        if (foundList == null) {
+            throw new NothingFoundForUserException(username);
         } else {
-            ShoppingList foundList = optionalShoppingList.get();
             foundList.addGroceryToList(converter.convertDTOToGrocery(groceryDTO));
+            shoppingListRepo.save(foundList);
+
+            return converter.convertToGroceryDTOList(foundList.getGroceries());
+        }
+    }
+
+    public List<GroceryDTO> removeGroceryFromList(GroceryDTO groceryDTO, String username) {
+
+        ShoppingList foundList = findCurrentShoppingListFromUser(username);
+        if (foundList == null) {
+            throw new NothingFoundForUserException(username);
+        } else {
+            foundList.removeGroceryFromList(converter.convertDTOToGrocery(groceryDTO));
             shoppingListRepo.save(foundList);
 
             return converter.convertToGroceryDTOList(foundList.getGroceries());

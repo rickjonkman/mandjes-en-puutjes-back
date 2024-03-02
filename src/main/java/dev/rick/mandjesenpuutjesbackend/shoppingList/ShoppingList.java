@@ -28,6 +28,7 @@ public class ShoppingList {
     private LocalDate creationDate;
 
     @ElementCollection
+    @CollectionTable(name = "shopping_list_groceries", joinColumns = @JoinColumn(name = "shopping_list_id"))
     private List<Grocery> groceries = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -35,6 +36,10 @@ public class ShoppingList {
 
     public void addGroceryToList(Grocery grocery) {
         this.groceries.add(grocery);
+    }
+
+    public void removeGroceryFromList(Grocery grocery) {
+        this.groceries.remove(grocery);
     }
 
 }

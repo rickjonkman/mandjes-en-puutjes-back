@@ -50,7 +50,7 @@ public class ShoppingListController {
 
             URI uri = URI.create(ServletUriComponentsBuilder
                     .fromCurrentRequest()
-                    .path("/api/v1/shopping-lists/list/"+outputDTO.getId())
+                    .path("/api/v1/shopping-lists/list/" + outputDTO.getId())
                     .toUriString());
 
             return ResponseEntity.created(uri).body(outputDTO);
@@ -59,15 +59,28 @@ public class ShoppingListController {
         }
     }
 
-    @PutMapping("/{id}/{userId}/add-grocery")
+    @PutMapping("/{userId}/add-grocery")
     public ResponseEntity<List<GroceryDTO>> addGroceryToList(
             @RequestBody GroceryDTO inputDTO,
-            @RequestParam("userId") String username,
-            @PathVariable("id") int id,
+            @PathVariable String userId,
             Principal principal) {
 
-        if (Objects.equals(principal.getName(), username)) {
-            List<GroceryDTO> groceryList = shoppingListService.addGroceryToList(inputDTO, username, id);
+        if (Objects.equals(principal.getName(), userId)) {
+            List<GroceryDTO> groceryList = shoppingListService.addGroceryToList(inputDTO, userId);
+            return ResponseEntity.ok(groceryList);
+        } else {
+            throw new NotAuthorizedException();
+        }
+    }
+
+    @PutMapping("/{userId}/remove-grocery")
+    public ResponseEntity<List<GroceryDTO>> removeGroceryFromList(
+            @RequestBody GroceryDTO inputDTO,
+            @PathVariable String userId,
+            Principal principal
+    ) {
+        if (Objects.equals(principal.getName(), userId)) {
+            List<GroceryDTO> groceryList = shoppingListService.removeGroceryFromList(inputDTO, userId);
             return ResponseEntity.ok(groceryList);
         } else {
             throw new NotAuthorizedException();
