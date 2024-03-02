@@ -70,6 +70,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/v1/recipes/add-new").hasRole("USER")
 
 //                        OPEN TO ALL
+                                .requestMatchers(HttpMethod.POST, "/api/v1/products/open/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/products/open/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users/authenticate").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/recipes/get").permitAll()

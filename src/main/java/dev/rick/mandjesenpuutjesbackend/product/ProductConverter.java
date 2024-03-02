@@ -32,9 +32,9 @@ public class ProductConverter {
         if (inputDTO == null) {
             throw new NullPointerException("Input should not be null.");
         } else {
-            return new Product(
-                    inputDTO.getProductId(),
-                    inputDTO.getProductName());
+            Product product = new Product();
+            product.setProductName(inputDTO.getProductName());
+            return product;
         }
 
     }

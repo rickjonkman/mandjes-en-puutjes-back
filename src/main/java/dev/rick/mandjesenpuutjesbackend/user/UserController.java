@@ -28,28 +28,24 @@ public class UserController {
     @PostMapping("/users/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserInputDTO newUser, BindingResult bindingResult) {
 
-        UserOutputDTO userOutputDTO;
+        UserRegisteredDTO userRegisteredDTO;
 
         if (bindingResult.hasFieldErrors()) {
             String responseBody = validator.inputValidator(bindingResult);
             return ResponseEntity.badRequest().body(responseBody);
         } else {
-            userOutputDTO = userService.registerNewUser(newUser);
+            userRegisteredDTO = userService.registerNewUser(newUser);
         }
 
-        String username = userOutputDTO.getUsername();
-        String authority = "USER";
+        AuthorityDTO authorityDTO = new AuthorityDTO(userRegisteredDTO.getUsername(), "USER");
 
-        boolean isAuthorityAdded = userService.addAuthorityToUser(username, authority);
-        if (!isAuthorityAdded) {
-            throw new RecordNotFoundException(username);
-        }
+        UserOutputDTO outputDTO = userService.addAuthorityToRegisteredUser(authorityDTO);
 
         return ResponseEntity.created(ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/api/v1/user/"+username)
+                .path("/api/v1/user/"+outputDTO.getUsername())
                 .build().toUri())
-                .body(userOutputDTO);
+                .body(outputDTO);
 
     }
 
@@ -62,6 +58,12 @@ public class UserController {
     @GetMapping("/user/get-preferences")
     public ResponseEntity<UserPreferencesDTO> getUserPreferencesById(@RequestParam(name = "username") String username) {
         UserPreferencesDTO outputDTO = userService.getUserPreferencesById(username);
+        return ResponseEntity.ok(outputDTO);
+    }
+
+    @PutMapping("/user/add-user-authority")
+    public ResponseEntity<UserOutputDTO> addUserAuthority(@RequestParam(name = "username") String username, @RequestBody AuthorityDTO authorityDTO) {
+        UserOutputDTO outputDTO = userService.addAuthorityToExistingUser(username, authorityDTO);
         return ResponseEntity.ok(outputDTO);
     }
 

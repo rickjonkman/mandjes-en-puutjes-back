@@ -21,7 +21,7 @@ public class UserService {
     private final UserRepository userRepo;
     private final UserConverter converter;
 
-    public UserOutputDTO registerNewUser(UserInputDTO newUser) {
+    public UserRegisteredDTO registerNewUser(UserInputDTO newUser) {
 
         User isUsernameTaken = findUserByUsername(newUser.getUsername());
         if (isUsernameTaken != null) {
@@ -29,7 +29,7 @@ public class UserService {
         } else {
             User createdUser = converter.convertToUser(newUser);
             userRepo.save(createdUser);
-            return converter.convertUserToDTO(createdUser);
+            return converter.convertToRegistrationDTO(createdUser);
         }
     }
 
@@ -98,16 +98,30 @@ public class UserService {
         }
     }
 
-    public boolean addAuthorityToUser(String username, String authorityName) {
-        User doesUserExist = findUserByUsername(username);
-        if (doesUserExist != null) {
-            doesUserExist.addAuthority(new Authority(username, authorityName));
-            userRepo.save(doesUserExist);
-            return true;
+    public UserOutputDTO addAuthorityToRegisteredUser(AuthorityDTO authorityDTO) {
+        User registeredUser = findUserByUsername(authorityDTO.getUsername());
+        if (registeredUser != null) {
+            Authority createdAuthority = converter.convertToAuthority(authorityDTO);
+            registeredUser.addAuthority(createdAuthority);
+            userRepo.save(registeredUser);
+
+            return converter.convertUserToDTO(registeredUser);
         } else {
-            return false;
+            throw new RecordNotFoundException(authorityDTO.getUsername());
         }
     }
+
+    public UserOutputDTO addAuthorityToExistingUser(String username, AuthorityDTO authorityDTO) {
+        User existingUser = findUserByUsername(username);
+        if (existingUser != null) {
+            existingUser.addAuthority(converter.convertToAuthority(authorityDTO));
+            userRepo.save(existingUser);
+
+            return converter.convertUserToDTO(existingUser);
+        } else {
+            throw new RecordNotFoundException(username);
+        }
+     }
 
     public boolean doesAuthorityContainAdmin(String username) {
         User foundUser = findUserByUsername(username);

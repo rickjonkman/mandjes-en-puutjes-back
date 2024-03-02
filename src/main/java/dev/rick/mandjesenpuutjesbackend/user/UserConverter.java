@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,18 @@ public class UserConverter {
                 user.getFirstname(),
                 user.isEnabled(),
                 convertAuthoritiesToArray(user.getAuthorities()));
+    }
+
+    public UserRegisteredDTO convertToRegistrationDTO(User createdUser) {
+        UserRegisteredDTO dto = new UserRegisteredDTO();
+        dto.setUsername(createdUser.getUsername());
+        dto.setEnabled(createdUser.isEnabled());
+        dto.setFirstname(createdUser.getFirstname());
+        return dto;
+    }
+
+    public Authority convertToAuthority(AuthorityDTO authorityDTO) {
+        return new Authority(authorityDTO.getUsername(), authorityDTO.getAuthority());
     }
 
     public String[] convertAuthoritiesToArray(Set<Authority> authorities) {

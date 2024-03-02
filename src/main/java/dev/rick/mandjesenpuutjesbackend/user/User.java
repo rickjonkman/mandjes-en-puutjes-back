@@ -1,8 +1,10 @@
 package dev.rick.mandjesenpuutjesbackend.user;
 
+import dev.rick.mandjesenpuutjesbackend.shoppingList.ShoppingList;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,10 +31,10 @@ public class User {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             orphanRemoval = true)
-    private Set<Authority> authorities;
+    private Set<Authority> authorities = new HashSet<>();
 
-//    @OneToMany
-//    private List<ShoppingList> shoppingLists;
+    @OneToMany(mappedBy = "user")
+    private List<ShoppingList> shoppingLists;
 
 
     public void addAuthority(Authority authority) {
